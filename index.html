@@ -16,7 +16,7 @@
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"
     rel="stylesheet">
 
-  <link rel="stylesheet" media="all" href="assets/jquery-jvectormap.css" />
+  <link href="dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
   <!-- Custom styles for this template -->
   <link href="index.css" rel="stylesheet">
 </head>
@@ -34,9 +34,7 @@
     <div class="starter-template">
       <h1>D3JS map</h1>
 
-      <!-- <object type="image/svg+xml" data="world.svg" id="svg-img"></object> -->
-
-      <div id="map1"></div>
+      <div id="vmap"></div>
     </div>
 
   </main><!-- /.container -->
@@ -58,87 +56,31 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
 
-  <!--  <script src="assets/jquery-1.8.2.js"></script>-->
-  <script src="assets/jquery-jvectormap.js"></script>
-  <script src="assets/lib/jquery-mousewheel.js"></script>
-
-  <script src="assets/src/jvectormap.js"></script>
-
-  <script src="assets/src/abstract-element.js"></script>
-  <script src="assets/src/abstract-canvas-element.js"></script>
-  <script src="assets/src/abstract-shape-element.js"></script>
-
-  <script src="assets/src/svg-element.js"></script>
-  <script src="assets/src/svg-group-element.js"></script>
-  <script src="assets/src/svg-canvas-element.js"></script>
-  <script src="assets/src/svg-shape-element.js"></script>
-  <script src="assets/src/svg-path-element.js"></script>
-  <script src="assets/src/svg-circle-element.js"></script>
-  <script src="assets/src/svg-image-element.js"></script>
-  <script src="assets/src/svg-text-element.js"></script>
-
-  <script src="assets/src/vml-element.js"></script>
-  <script src="assets/src/vml-group-element.js"></script>
-  <script src="assets/src/vml-canvas-element.js"></script>
-  <script src="assets/src/vml-shape-element.js"></script>
-  <script src="assets/src/vml-path-element.js"></script>
-  <script src="assets/src/vml-circle-element.js"></script>
-  <script src="assets/src/vml-image-element.js"></script>
-
-  <script src="assets/src/map-object.js"></script>
-  <script src="assets/src/region.js"></script>
-  <script src="assets/src/marker.js"></script>
-
-  <script src="assets/src/vector-canvas.js"></script>
-  <script src="assets/src/simple-scale.js"></script>
-  <script src="assets/src/ordinal-scale.js"></script>
-  <script src="assets/src/numeric-scale.js"></script>
-  <script src="assets/src/color-scale.js"></script>
-  <script src="assets/src/legend.js"></script>
-  <script src="assets/src/data-series.js"></script>
-  <script src="assets/src/proj.js"></script>
-  <script src="assets/src/map.js"></script>
-
-  <script src="assets/jquery-jvectormap-world-mill-en.js"></script>
+  <script type="text/javascript" src="dist/jquery.vmap.js"></script>
+  <script type="text/javascript" src="dist/maps/jquery.vmap.world.js" charset="utf-8"></script>
   <script>
-    jQuery.noConflict();
-    jQuery(function () {
-      var $ = jQuery;
-
-      var mapObject = $('#map1').vectorMap({
-        map: 'world_mill_en',
+    var values = {
+      "us": 1,
+      "ru": 1
+    };
+    jQuery(document).ready(function () {
+      jQuery('#vmap').vectorMap({
+        map: 'world_en',
+        backgroundColor: '#fafafa',
+        color: '#acdda5',
+        hoverOpacity: 0.7,
+        selectedColor: '#ffff00',
         panOnDrag: true,
-        focusOn: {
-          x: 0.5,
-          y: 0.5,
-          scale: 1,
-          animate: true
-        },
-        onRegionClick: (element, code, region) => {
-        },
-        regionsSelectable: true,
-        multiSelectRegion: false,
-        series: {
-          regions: [{
-            scale: ['#fc8d58', '#ffff00'],
-            min: 0,
-            normalizeFunction: 'polynomial',
-            values: {
-              "CA": 0,
-              "US": 1,
-              "RU": 0,
-              "BR": 0
-            }
-          }]
-        },
-        regionStyle: {
-          initial: {
-            fill: '#acdda5'
-          },
-        },
-        backgroundColor: '#fafafa'
+        enableZoom: true,
+        showTooltip: true,
+        scaleColors: ['#fc8d58'],
+        values,
+        normalizeFunction: 'polynomial',
+        onRegionClick: function (event, code, region) {
+          event.preventDefault();
+        }
       });
-    })
+    });
   </script>
 </body>
 

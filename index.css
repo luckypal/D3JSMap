@@ -24,7 +24,7 @@ html {
 
 .box-shadow { box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05); }
 
-#map1 {
+#vmap {
   width: 100%;
   height: calc(100vh - 150px)
 }
