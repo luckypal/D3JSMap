@@ -24,7 +24,7 @@
 <body>
 
   <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
-    <h5 class="my-0 mr-md-auto font-weight-normal">SVG Map</h5>
+    <h5 class="my-0 mr-md-auto font-weight-normal">D3JS map</h5>
     <nav class="my-2 my-md-0 mr-md-3">
     </nav>
   </div>
@@ -32,7 +32,7 @@
   <main role="main" class="container">
 
     <div class="starter-template">
-      <h1>D3JS map</h1>
+      <!-- <h1>D3JS map</h1> -->
 
       <div id="vmap"></div>
     </div>
@@ -52,6 +52,24 @@
 
   </main><!-- /.container -->
 
+  <div class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"></h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Description : <span class="project-description"></span></p>
+          <p>Date : <span class="project-date"></span></p>
+        </div>
+        <div class="modal-footer">
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -83,7 +101,7 @@
         values,
         normalizeFunction: 'polynomial',
         onRegionClick: (event, code, region) => {
-          if (values [code] == undefined)
+          if (values[code] == undefined)
             event.preventDefault();
         },
         onRegionSelect: (event, code, region) => {
@@ -118,8 +136,8 @@
       resetProject();
       $(".country-code").html(code.toUpperCase());
       var html = "";
-      for (var i = 0; i < jsonData.length; i ++) {
-        var {id, country, status, title} = jsonData [i];
+      for (var i = 0; i < jsonData.length; i++) {
+        var { id, country, status, title } = jsonData[i];
         if (code == country) {
           if (status == "in hold")
             $(".projects-in-hold").append(`<li><a href="#" onclick="onProjectClick(${id})">${title}</a></li>`);
@@ -135,7 +153,16 @@
     }
 
     var onProjectClick = (id) => {
-      alert(id);
+      var result = jsonData.filter(item => item.id == id);
+      if (result.length == 0) return;
+
+      var {title, description, date} = result [0];
+      
+      $(".modal-title").html(title);
+      $(".project-description").html(description);
+      $(".project-date").html(date);
+
+      $('.modal').modal('show');
     }
   </script>
 </body>
