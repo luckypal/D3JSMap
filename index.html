@@ -105,7 +105,7 @@
     jQuery(function () {
       var $ = jQuery;
 
-      $('#map1').vectorMap({
+      var mapObject = $('#map1').vectorMap({
         map: 'world_mill_en',
         panOnDrag: true,
         focusOn: {
@@ -114,25 +114,29 @@
           scale: 1,
           animate: true
         },
-        onRegionClick: (e, code) => {
-          alert(code);
+        onRegionClick: (element, code, region) => {
         },
+        regionsSelectable: true,
+        multiSelectRegion: false,
         series: {
           regions: [{
-            scale: ['#acdda5', '#fc8d58'],
+            scale: ['#fc8d58', '#ffff00'],
             min: 0,
             normalizeFunction: 'polynomial',
             values: {
+              "CA": 0,
               "US": 1,
-              "RU": 0
+              "RU": 0,
+              "BR": 0
             }
           }]
         },
         regionStyle: {
           initial: {
             fill: '#acdda5'
-          }
-        }
+          },
+        },
+        backgroundColor: '#fafafa'
       });
     })
   </script>
