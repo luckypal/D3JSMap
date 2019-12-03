@@ -26,5 +26,9 @@ html {
 
 #vmap {
   width: 100%;
-  height: calc(100vh - 150px)
+  height: calc(100vh - 300px)
+}
+
+.country-property {
+  display: none;
 }

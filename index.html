@@ -37,18 +37,26 @@
       <div id="vmap"></div>
     </div>
 
+    <div class="row">
+      <div class="col-md-6 country-property">
+        <h5>All projects in <b class="country-code">US</b>, where status = "in hold"</h5>
+        <ul class="projects-in-hold">
+        </ul>
+      </div>
+      <div class="col-md-6 country-property">
+        <h5>All projects in <b class="country-code">US</b>, where status = "finished"</h5>
+        <ul class="projects-finished">
+        </ul>
+      </div>
+    </div>
+
   </main><!-- /.container -->
 
 
   <!-- Bootstrap core JavaScript
 ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
     integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
     crossorigin="anonymous"></script>
@@ -59,12 +67,10 @@
   <script type="text/javascript" src="dist/jquery.vmap.js"></script>
   <script type="text/javascript" src="dist/maps/jquery.vmap.world.js" charset="utf-8"></script>
   <script>
-    var values = {
-      "us": 1,
-      "ru": 1
-    };
-    jQuery(document).ready(function () {
-      jQuery('#vmap').vectorMap({
+    var values = {};
+    var jsonData = [];
+    $(document).ready(function () {
+      var jMap = $('#vmap').vectorMap({
         map: 'world_en',
         backgroundColor: '#fafafa',
         color: '#acdda5',
@@ -76,11 +82,61 @@
         scaleColors: ['#fc8d58'],
         values,
         normalizeFunction: 'polynomial',
-        onRegionClick: function (event, code, region) {
-          event.preventDefault();
+        onRegionClick: (event, code, region) => {
+          if (values [code] == undefined)
+            event.preventDefault();
+        },
+        onRegionSelect: (event, code, region) => {
+          setProject(code);
+          $(".country-property").show();
+        },
+        onRegionDeselect: (event, code, region) => {
+          $(".country-property").hide();
+          resetProject();
         }
       });
+      jQuery.post({
+        url: "index.php",
+        success: (data) => {
+          data = JSON.parse(data);
+          setMapValues(data);
+        }
+      })
     });
+
+    var setMapValues = (data) => {
+      jsonData = data;
+
+      for (var i = 0; i < data.length; i++) {
+        var { country } = data[i];
+        values[country] = 1;
+      }
+      $('#vmap').vectorMap('set', 'values', values);
+    }
+
+    var setProject = (code) => {
+      resetProject();
+      $(".country-code").html(code.toUpperCase());
+      var html = "";
+      for (var i = 0; i < jsonData.length; i ++) {
+        var {id, country, status, title} = jsonData [i];
+        if (code == country) {
+          if (status == "in hold")
+            $(".projects-in-hold").append(`<li><a href="#" onclick="onProjectClick(${id})">${title}</a></li>`);
+          else
+            $(".projects-finished").append(`<li><a href="#" onclick="onProjectClick(${id})">${title}</a></li>`);
+        }
+      }
+    }
+
+    var resetProject = () => {
+      $(".projects-in-hold").html("");
+      $(".projects-finished").html("");
+    }
+
+    var onProjectClick = (id) => {
+      alert(id);
+    }
   </script>
 </body>
 
