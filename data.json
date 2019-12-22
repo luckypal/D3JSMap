@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "country": "us",
+    "country": "US",
     "title": "title 1",
     "description": "Hello from title 1",
     "status": "in hold",
@@ -9,7 +9,7 @@
   },
   {
     "id": 2,
-    "country": "us",
+    "country": "US",
     "title": "title 2",
     "description": "Hello from title 2",
     "status": "in hold",
@@ -17,7 +17,7 @@
   },
   {
     "id": 3,
-    "country": "us",
+    "country": "US",
     "title": "title 33",
     "description": "Hello from title 3 finished status.",
     "status": "finished",
@@ -25,7 +25,7 @@
   },
   {
     "id": 4,
-    "country": "ru",
+    "country": "RU",
     "title": "title ru",
     "description": "Hello from title ru",
     "status": "in hold",
@@ -33,7 +33,7 @@
   },
   {
     "id": 5,
-    "country": "ru",
+    "country": "RU",
     "title": "title rasdfsdfsadfasdfu",
     "description": "Hello from title rugdfsgdfgsdfgsdfgdsfg",
     "status": "in hold",

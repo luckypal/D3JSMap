@@ -16,7 +16,7 @@
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"
     rel="stylesheet">
 
-  <link href="dist/jqvmap.css" media="screen" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" media="all" href="dist/jquery-jvectormap.css" />
   <!-- Custom styles for this template -->
   <link href="index.css" rel="stylesheet">
 </head>
@@ -82,36 +82,114 @@
     integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
     crossorigin="anonymous"></script>
 
-  <script type="text/javascript" src="dist/jquery.vmap.js"></script>
-  <script type="text/javascript" src="dist/maps/jquery.vmap.world.js" charset="utf-8"></script>
+  <script type="text/javascript" src="dist/jquery-jvectormap.js"></script>
+
+  <script src="dist/src/jvectormap.js"></script>
+
+  <script src="dist/lib/jquery-mousewheel.js"></script>
+  <script src="dist/src/abstract-element.js"></script>
+  <script src="dist/src/abstract-canvas-element.js"></script>
+  <script src="dist/src/abstract-shape-element.js"></script>
+
+  <script src="dist/src/svg-element.js"></script>
+  <script src="dist/src/svg-group-element.js"></script>
+  <script src="dist/src/svg-canvas-element.js"></script>
+  <script src="dist/src/svg-shape-element.js"></script>
+  <script src="dist/src/svg-path-element.js"></script>
+  <script src="dist/src/svg-circle-element.js"></script>
+  <script src="dist/src/svg-image-element.js"></script>
+  <script src="dist/src/svg-text-element.js"></script>
+
+  <script src="dist/src/vml-element.js"></script>
+  <script src="dist/src/vml-group-element.js"></script>
+  <script src="dist/src/vml-canvas-element.js"></script>
+  <script src="dist/src/vml-shape-element.js"></script>
+  <script src="dist/src/vml-path-element.js"></script>
+  <script src="dist/src/vml-circle-element.js"></script>
+  <script src="dist/src/vml-image-element.js"></script>
+
+  <script src="dist/src/map-object.js"></script>
+  <script src="dist/src/region.js"></script>
+  <script src="dist/src/marker.js"></script>
+
+  <script src="dist/src/vector-canvas.js"></script>
+  <script src="dist/src/simple-scale.js"></script>
+  <script src="dist/src/ordinal-scale.js"></script>
+  <script src="dist/src/numeric-scale.js"></script>
+  <script src="dist/src/color-scale.js"></script>
+  <script src="dist/src/legend.js"></script>
+  <script src="dist/src/data-series.js"></script>
+  <script src="dist/src/proj.js"></script>
+  <script src="dist/src/map.js"></script>
+
+  <script type="text/javascript" src="dist/maps/jquery-jvectormap-world-mill-en.js" charset="utf-8"></script>
   <script>
     var values = {};
+    var markers = [];
     var jsonData = [];
+    var jMap = null;
     $(document).ready(function () {
-      var jMap = $('#vmap').vectorMap({
-        map: 'world_en',
+      jMap = new jvm.Map({
+        container: $('#vmap'),
+        map: 'world_mill_en',
         backgroundColor: '#fafafa',
-        color: '#acdda5',
-        hoverOpacity: 0.7,
-        selectedColor: '#ffff00',
         panOnDrag: true,
+
         enableZoom: true,
         showTooltip: true,
-        scaleColors: ['#fc8d58'],
-        values,
-        normalizeFunction: 'polynomial',
+
+        regionStyle: {
+          initial: {
+            fill: '#acdda5',
+            stroke: '#f00',
+            "stroke-width": 0.5,
+            "stroke-opacity": 0.7
+          },
+          hover: {
+            "fill-opacity": 0.7,
+            cursor: 'pointer'
+          },
+          selected: {
+            fill: '#ffff00',
+          }
+        },
+        regionsSelectable: true,
+        series: {
+          regions: [{
+            scale: ['#fc8d58'],
+            normalizeFunction: 'polynomial',
+            values
+          }]
+        },
+        
+        markerStyle: {
+          initial: {
+            fill: '#F8E23B',
+            stroke: '#383f47'
+          }
+        },
+        markers,
+
         onRegionClick: (event, code, region) => {
           if (values[code] == undefined)
             event.preventDefault();
+          else {
+            var regions = jMap.getSelectedRegions();
+            if (regions.length == 0) return;
+
+            if (code != regions [0])
+              jMap.clearSelectedRegions();
+          }
         },
-        onRegionSelect: (event, code, region) => {
-          setProject(code);
-          $(".country-property").show();
+        onRegionSelected: (event, code, isSelect) => {
+          if (isSelect) {
+            setProject(code);
+            $(".country-property").show();
+          } else {
+            $(".country-property").hide();
+            resetProject();
+          }
         },
-        onRegionDeselect: (event, code, region) => {
-          $(".country-property").hide();
-          resetProject();
-        }
       });
       jQuery.post({
         url: "index.php",
@@ -119,7 +197,9 @@
           data = JSON.parse(data);
           setMapValues(data);
         }
-      })
+      });
+      addMarker(34.0522, -118.2437, 'Los Angeles');
+      addMarker(36.1699, -115.1398, 'Las Vegas');
     });
 
     var setMapValues = (data) => {
@@ -129,7 +209,8 @@
         var { country } = data[i];
         values[country] = 1;
       }
-      $('#vmap').vectorMap('set', 'values', values);
+
+      jMap.series.regions[0].setValues(values);
     }
 
     var setProject = (code) => {
@@ -156,13 +237,18 @@
       var result = jsonData.filter(item => item.id == id);
       if (result.length == 0) return;
 
-      var {title, description, date} = result [0];
-      
+      var { title, description, date } = result[0];
+
       $(".modal-title").html(title);
       $(".project-description").html(description);
       $(".project-date").html(date);
 
       $('.modal').modal('show');
+    }
+
+    var addMarker = (lat, lng, desc) => {
+      var key = Object.keys(jMap.markers).length;
+      jMap.addMarker(key, { latLng: [lat, lng], name: desc }, []);
     }
   </script>
 </body>
